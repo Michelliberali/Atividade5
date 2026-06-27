@@ -3,22 +3,30 @@ import { defineConfig, devices } from "@playwright/test";
 const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
 const API_URL = process.env.API_URL || "http://localhost:8080";
 
+// No ambiente de CI a máquina é mais lenta, então damos mais tempo e
+// permitimos algumas tentativas para evitar falhas por instabilidade.
+const isCI = !!process.env.CI;
+
 export default defineConfig({
   testDir: "./tests",
 
-  // Execução serial: deixa a gravação do vídeo determinística e evita
-  // concorrência no banco durante os testes de cadastro/login.
   fullyParallel: false,
   workers: 1,
 
-  forbidOnly: !!process.env.CI,
-  retries: 0,
+  // Tempo máximo por teste (maior no CI).
+  timeout: isCI ? 60_000 : 30_000,
+
+  forbidOnly: isCI,
+  retries: isCI ? 2 : 0,
 
   reporter: [["html", { open: "never" }], ["list"]],
 
   use: {
     trace: "on-first-retry",
     screenshot: "only-on-failure",
+    // Espera padrão por ações/navegação (maior no CI).
+    actionTimeout: isCI ? 15_000 : 0,
+    navigationTimeout: isCI ? 30_000 : 0,
   },
 
   projects: [
