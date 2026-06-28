@@ -15,7 +15,14 @@ public class UserService {
   }
 
   public boolean isEmailValid(String email) {
-    return email != null && email.contains("@");
+    // Correção do bug da Atividade 4: antes só verificava se continha "@",
+    // o que aceitava e-mails sem domínio (ex.: "usuario@"). Agora exige
+    // texto antes do "@", um domínio e um sufixo após o ponto.
+    if (email == null) {
+      return false;
+    }
+    String emailRegex = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$";
+    return Pattern.matches(emailRegex, email);
   }
 
   public boolean isPasswordValid(String password) {
