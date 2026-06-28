@@ -1,5 +1,8 @@
 export function isPasswordValid(password: string): boolean {
-  if (!password || password.length <= 8) {
+  // Correção do bug da Atividade 4: antes usava `length <= 8`, o que
+  // rejeitava senhas de exatamente 8 caracteres. A spec pede "mínimo 8",
+  // então o correto é recusar apenas quando tem menos de 8 (`length < 8`).
+  if (!password || password.length < 8) {
     return false;
   }
 
@@ -18,7 +21,7 @@ export function getPasswordValidationMessage(password: string): string {
 
   const errors: string[] = [];
 
-  if (password.length <= 8) {
+  if (password.length < 8) {
     errors.push("mínimo de 8 caracteres");
   }
 
@@ -44,4 +47,3 @@ export function getPasswordValidationMessage(password: string): string {
 
   return `A senha deve conter: ${errors.join(", ")}`;
 }
-
