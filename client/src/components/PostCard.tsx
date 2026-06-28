@@ -17,6 +17,11 @@ export default function PostCard({
   const [liked, setLiked] = useState(post.liked);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Número de curtidas e descurtidas vindo do DummyJSON (objeto reactions).
+  // Usa 0 como padrão caso o post não traga as reações.
+  const likes = post.reactions?.likes ?? 0;
+  const dislikes = post.reactions?.dislikes ?? 0;
+
   async function handleLike() {
     if (!isAuthenticated) {
       alert("Você precisa estar autenticado para curtir posts!");
@@ -80,11 +85,25 @@ export default function PostCard({
       <div
         style={{
           display: "flex",
-          justifyContent: "flex-end",
+          justifyContent: "space-between",
           alignItems: "center",
           marginTop: "1rem",
         }}
       >
+        {/* Exibição das reações (curtidas e descurtidas) do post */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "1rem",
+            color: "var(--foreground)",
+            opacity: 0.8,
+          }}
+        >
+          <span aria-label="curtidas">👍 {likes}</span>
+          <span aria-label="descurtidas">👎 {dislikes}</span>
+        </div>
+
         <button
           onClick={handleLike}
           disabled={isLoading}
